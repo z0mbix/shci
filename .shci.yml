@@ -5,5 +5,11 @@ build:
     - make build
     - make release
 post-build:
+    - echo 'Uploading build artifact to S3'
+    - make clean
+success:
+    - echo 'Sending celebratory email to the boss'
+    - echo 'Sending happy message to HipChat'
+failure:
     - echo 'Sending email to those that care'
-    - echo 'Sending a message to HipChat'
+    - echo 'Sending sad message to HipChat'

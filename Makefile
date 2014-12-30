@@ -15,6 +15,7 @@ test:
 	@bash -n $(NAME) || exit 1
 
 release:
+	@echo "Creating tarball release: $(NAME)-$(GIT_COMMIT).tar.gz"
 	@tar czf $(NAME)-$(GIT_COMMIT).tar.gz shci README.md
 
 .PHONY: build clean test release
