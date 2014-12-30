@@ -20,17 +20,16 @@ done
 
 success() {
   type=$1
-  echo "Performing $type $FUNCNAME"
+  echo "$type $FUNCNAME"
 }
 
 fail() {
   type=$1
-  echo "Performing $type $FUNCNAME"
+  echo "$type $FUNCNAME"
 }
 
 build() {
   type=$1
-  echo "Performing $type"
 
   if [[ -f $BUILD_FILE ]] ; then
     # This is ugly. Should have just used json and jq
@@ -52,8 +51,12 @@ build() {
         ;;
       *) echo "Invalid type: $OPTARG" >&2; exit 1 ;;
     esac
+  else
+    echo "Cannot find yaml build file!"
+    exit 1
   fi
 
+  echo "Performing $type"
   for cmd in ${build_cmds[@]}; do
     eval $cmd
   done
