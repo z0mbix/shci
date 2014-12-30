@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+#
+
+[[ "$TRACE" ]] && set -x
+set -o pipefail
+IFS=$'\n\t'
+
+BUILD_DIR=$PWD
+BUILD_FILE='.build.yml'
+
+while getopts ":d:f:v" o; do
+  case $o in
+    d) BUILD_DIR=$OPTARG ;;
+    f) BUILD_FILE=$OPTARG ;;
+    v) VERBOSE=true ;;
+    :) echo "Option -$OPTARG requires an argument." >&2; exit 1 ;;
+    *) echo "Invalid option: -$OPTARG" >&2; exit 1 ;;
+  esac
+done
+
+success() {
+  desc="Run after the build succeeds"
+  type=$1
+  echo "Performing $type $FUNCNAME"
+}
+
+fail() {
+  desc="Run after the build fails"
+  type=$1
+  echo "Performing $type $FUNCNAME"
+}
+
+build() {
+  desc="Run the pre-build, build or post-build"
+  type=$1
+  echo "Performing $type"
+
+  if [[ -f $BUILD_FILE ]] ; then
+    # This is ugly. Should have just used json and jq
+    case $type in
+      pre)
+        declare -a \
+          build_cmds=$(awk '/^build:/{p=0};p;/^pre-build:/{p=1}' $BUILD_FILE |\
+                         sed -E 's/ .*- //g')
+        ;;
+      build)
+        declare -a \
+          build_cmds=$(awk '/^post-build:/{p=0};p;/^build:/{p=1}' $BUILD_FILE |\
+                         sed -E 's/ .*- //g')
+        ;;
+      post)
+        declare -a \
+          build_cmds=$(awk 'p;/^post-build:/{p=1}' $BUILD_FILE |\
+                         sed -E 's/ .*- //g')
+        ;;
+      *) echo "Invalid type: $OPTARG" >&2; exit 1 ;;
+    esac
+  fi
+
+  for cmd in ${build_cmds[@]}; do
+    eval $cmd
+  done
+}
+
+main() {
+  cd $BUILD_DIR
+
+  if [[ -d .git ]]; then
+    export GIT_COMMIT=$(git rev-parse HEAD)
+    export GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+  fi
+  export BUILD_DIR
+
+  if [[ $VERBOSE ]]; then
+    echo "BUILD_DIR: $BUILD_DIR"
+    echo "GIT_COMMIT: $GIT_COMMIT"
+    echo "GIT_BRANCH: $GIT_BRANCH"
+  fi
+
+  declare -a phases=(pre build post)
+  for phase in ${phases[@]}; do
+    build $phase
+    if [ $? -ne "0" ]; then
+      fail $phase
+      exit 1
+    fi
+    success $phase
+    echo
+  done
+
+}
+
+main
+
+
+

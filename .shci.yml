@@ -1,0 +1,9 @@
+pre-build:
+    - make clean
+build:
+    - make test
+    - make build
+    - make release
+post-build:
+    - echo 'Sending email to those that care'
+    - echo 'Sending a message to HipChat'
