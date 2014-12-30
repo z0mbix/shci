@@ -6,7 +6,7 @@ set -o pipefail
 IFS=$'\n\t'
 
 BUILD_DIR=$PWD
-BUILD_FILE='.build.yml'
+BUILD_FILE='.shci.yml'
 
 while getopts ":d:f:v" o; do
   case $o in

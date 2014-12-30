@@ -9,7 +9,6 @@ build:
 
 clean:
 	@echo "Cleaning stuff up..."
-	@rm $(NAME)-$(GIT_COMMIT).tar.gz
 
 test:
 	@echo "Running tests..."
@@ -18,4 +17,4 @@ test:
 release:
 	@tar czf $(NAME)-$(GIT_COMMIT).tar.gz shci README.md
 
-.PHONY: build release
+.PHONY: build clean test release
