@@ -19,19 +19,16 @@ while getopts ":d:f:v" o; do
 done
 
 success() {
-  desc="Run after the build succeeds"
   type=$1
   echo "Performing $type $FUNCNAME"
 }
 
 fail() {
-  desc="Run after the build fails"
   type=$1
   echo "Performing $type $FUNCNAME"
 }
 
 build() {
-  desc="Run the pre-build, build or post-build"
   type=$1
   echo "Performing $type"
 
@@ -87,10 +84,7 @@ main() {
     success $phase
     echo
   done
-
 }
 
 main
-
-
 
