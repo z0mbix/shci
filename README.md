@@ -29,16 +29,16 @@ Running shci with the example yaml build config from above:
 	$ ./shci
 	Performing pre
 	Cleaning stuff up...
-	
+
 	Performing build
 	Running tests...
 	Building 2b4ccc8cdfc42a81ddced3e2ea9015881787fc61 on master
 	Creating tarball release: shci-2b4ccc8cdfc42a81ddced3e2ea9015881787fc61.tar.gz
-	
+
 	Performing post
 	Uploading build artifact to S3
 	Cleaning stuff up...
-	
+
 	build_result: post success:
 	Sending celebratory email to the boss
 	Sending happy message to HipChat
@@ -58,7 +58,7 @@ You can also specify the location of the repository with the **-d** option:
 	$ ./shci
 	Performing pre
 	Cleaning stuff up...
-	
+
 	Performing build
 	Running tests...
 	shci: line 111: unexpected EOF while looking for matching `''
@@ -76,3 +76,5 @@ Could be used with the excellent [phayes/hookserve](https://github.com/phayes/ho
 
 - This isn't fully working yet
 - Should be better at parsing yaml or just replace yaml
+- Only supports git
+
